@@ -11,7 +11,7 @@ router.post('/', function(req, res, next) {
 		Warehouse: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 顯示客戶名稱();", true, optObj, setCustomers);
+	pub.getQueryJSON(res, "CALL 列示客戶名稱();", true, optObj, setCustomers);
 });
 
 function setCustomers(res, result, optObj) {

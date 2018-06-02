@@ -14,12 +14,12 @@ router.post('/', function(req, res, next) {
 });
 
 function setCarts(res, result, optObj) {
-	if (!pub.isJSONEmpty(result)) {
+	if (result.length > 0) {
 		optObj.Success = true;
 		optObj.Carts = result;
 	}else {
 		optObj.Success = false;
-		delete Carts.Products;
+		delete optObj.Carts;
 	}
 	
 	pub.sendJSONResponse(res, optObj)

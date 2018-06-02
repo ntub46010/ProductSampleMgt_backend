@@ -25,7 +25,7 @@ function setOrderInfo(res, result, optObj) {
 	if (!pub.isJSONEmpty(result)) {	
 		optObj.OrderInfo = result;
 		
-		var mandate = "CALL 顯示客戶名稱();";
+		var mandate = "CALL 列示客戶名稱();";
 		pub.getQueryJSON(res, mandate, true, optObj, setCustomers);
 	}else {
 		optObj.Success = false;

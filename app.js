@@ -40,7 +40,7 @@ app.use('/delete_cart', require('./routes/delete_cart'));
 app.use('/add_cart_item', require('./routes/add_cart_item'));
 app.use('/show_cart', require('./routes/show_cart'));
 
-app.use('/show_customers', require('./routes/show_customers'));
+app.use('/show_customers_warehouses', require('./routes/show_customers_warehouses'));
 app.use('/show_contacts', require('./routes/show_contacts'));
 app.use('/create_order', require('./routes/create_order'));
 app.use('/show_order', require('./routes/show_order'));
@@ -48,6 +48,8 @@ app.use('/edit_order', require('./routes/edit_order'));
 app.use('/show_editing_order', require('./routes/show_editing_order'));
 app.use('/list_orders', require('./routes/list_orders'));
 app.use('/add_order_item', require('./routes/add_order_item'));
+
+app.use('/list_notifications', require('./routes/list_notifications'));
 
 app.use('/query', require('./routes/query'));
 
