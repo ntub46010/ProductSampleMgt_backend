@@ -27,7 +27,8 @@ router.post('/', function(req, res, next) {
 			Ps: "",
 			Stock: 0,
 			SafeStock: 0
-		}
+		},
+		ProductAdmin: []
 	};
 
 	pub.getQueryJSON(res, "CALL 顯示材質();", true, optObj, setMaterial);
@@ -52,7 +53,19 @@ function setProductInfo(res, result, optObj) {
 		delete optObj.ProductInfo;
 	}
 	
-	pub.sendJSONResponse(res, optObj)
+	pub.getQueryJSON(res, "CALL 列示產品管理員();", true, optObj, setProductAdmin);
+}
+
+function setProductAdmin(res, result, optObj) {
+	if (result.length > 0) {
+		optObj.ProductAdmin = result;
+		optObj.Success = true;
+	}else {
+		delete optObj.ProductAdmin;
+		optObj.Success = false;
+	}
+	
+	pub.sendJSONResponse(res, optObj);
 }
 
 module.exports = router;

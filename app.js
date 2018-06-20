@@ -40,8 +40,9 @@ app.use('/delete_cart', require('./routes/delete_cart'));
 app.use('/add_cart_item', require('./routes/add_cart_item'));
 app.use('/show_cart', require('./routes/show_cart'));
 
-app.use('/show_customers_warehouses', require('./routes/show_customers_warehouses'));
+app.use('/show_staff', require('./routes/show_staff'));
 app.use('/show_contacts', require('./routes/show_contacts'));
+app.use('/list_cart_unenough_item', require('./routes/list_cart_unenough_item'));
 app.use('/create_order', require('./routes/create_order'));
 app.use('/show_order', require('./routes/show_order'));
 app.use('/edit_order', require('./routes/edit_order'));
@@ -49,7 +50,12 @@ app.use('/show_editing_order', require('./routes/show_editing_order'));
 app.use('/list_orders', require('./routes/list_orders'));
 app.use('/add_order_item', require('./routes/add_order_item'));
 
+app.use('/show_profile', require('./routes/show_profile'));
+app.use('/edit_profile', require('./routes/edit_profile'));
+
 app.use('/list_notifications', require('./routes/list_notifications'));
+
+app.use('/search_product', require('./routes/search_product'));
 
 app.use('/query', require('./routes/query'));
 

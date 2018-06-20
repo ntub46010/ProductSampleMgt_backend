@@ -13,18 +13,21 @@ router.post('/', function(req, res, next) {
 	
 	var optObj = {
 		Status: false,
-		Success: false
+		Success: false,
+		IsLower: false
 	};
 
 	var mandate = "CALL 異動訂單項目('" + orderId + "', '" + productId + "', '" + amount + "');";
-	pub.getQueryJSON(res, mandate, false, optObj, setResponse);
+	pub.getQueryJSON(res, mandate, false, optObj, setIsLower);
 });
 
-function setResponse(res, result, optObj) {
-	if (result != undefined) {
+function setIsLower(res, result, optObj) {
+	if (!pub.isJSONEmpty(result)) {
 		optObj.Success = true;
+		optObj.IsLower = result.Stock < result.SafeStock;
 	}else {
 		optObj.Success = false;
+		delete optObj.IsLower;
 	}
 	
 	pub.sendJSONResponse(res, optObj)

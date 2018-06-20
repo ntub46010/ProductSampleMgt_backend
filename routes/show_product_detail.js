@@ -29,7 +29,8 @@ router.post('/', function(req, res, next) {
 			SafeStock: 0
 		},
 		CartAmount: 0,
-		OrderAmount: 0
+		OrderAmount: 0,
+		ProductAdmin: []
 	};
 
 	var mandate = "CALL 顯示商品詳情('" + productId + "')";
@@ -50,7 +51,7 @@ function setProductInfo(res, result, optObj) {
 }
 
 function setCartAmount(res, result, optObj) { //未選擇購物車會underfined
-	if (result != undefined)
+	if (!pub.isJSONEmpty(result))
 		optObj.CartAmount = result.Amount;
 	else
 		optObj.CartAmount = 0;
@@ -60,12 +61,24 @@ function setCartAmount(res, result, optObj) { //未選擇購物車會underfined
 }
 
 function setOrderAmount(res, result, optObj) { //未選擇訂單會underfined
-	if (result != undefined)
+	if (!pub.isJSONEmpty(result))
 		optObj.OrderAmount = result.Amount;
 	else
 		optObj.OrderAmount = 0;
 	
-	pub.sendJSONResponse(res, optObj);	
+	pub.getQueryJSON(res, "CALL 列示產品管理員();", true, optObj, setProductAdmin);
+}
+
+function setProductAdmin(res, result, optObj) {
+	if (result.length > 0) {
+		optObj.ProductAdmin = result;
+		optObj.Success = true;
+	}else {
+		delete optObj.ProductAdmin;
+		optObj.Success = false;
+	}
+	
+	pub.sendJSONResponse(res, optObj);
 }
 
 module.exports = router;

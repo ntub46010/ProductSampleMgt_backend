@@ -24,6 +24,7 @@ router.post('/', function(req, res, next) {
 	var optObj = {
 		Status: false,
 		Success: false,
+		IsLower: false,
 		ProductInfo: {
 			Id: "",
 			Name: ""
@@ -47,8 +48,10 @@ function setProductInfo(res, result, optObj) {
 		optObj.Success = true;
 		if (editMode == 1 || editMode == 2) {
 			optObj.ProductInfo = result;
+			optObj.IsLower = result.Stock < result.SafeStock;
 		}else if (editMode == 3) {
 			delete optObj.ProductInfo;
+			delete optObj.IsLower;
 		}		
 	}else {
 		optObj.Success = false;

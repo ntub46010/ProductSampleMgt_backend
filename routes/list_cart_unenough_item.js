@@ -3,28 +3,28 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var salesId;
+var cartId;
 
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	salesId = reqObj.SalesId;
+	cartId = reqObj.CartId;
 	
 	var optObj = {
 		Status: false,
 		Success: false,
-		Carts: []
+		Products: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示購物車('" + salesId + "');", true, optObj, setCarts);
+	pub.getQueryJSON(res, "CALL 列示購物車內庫存不足產品(" + cartId + ");", true, optObj, setProducts);
 });
 
-function setCarts(res, result, optObj) {
+function setProducts(res, result, optObj) {
 	if (result.length > 0) {
-		optObj.Success = true;
-		optObj.Carts = result;
+		optObj.Success = false; //此處注意Success相反
+		delete optObj.Products;
+		optObj.Products = result;
 	}else {
-		optObj.Success = false;
-		delete optObj.Carts;
+		optObj.Success = true;
 	}
 	
 	pub.sendJSONResponse(res, optObj)
