@@ -3,12 +3,10 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var userId, userPwd;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	userId = reqObj.Account;
-	userPwd = reqObj.Password;
+	var userId = reqObj.Account;
+	var userPwd = reqObj.Password;
 	
 	var optObj = {
 		Status: false,
@@ -20,6 +18,19 @@ router.post('/', function(req, res, next) {
 			Identity: "",
 		}
 	};
+	
+	try {
+		if (
+			userId.length > 15 ||
+			userPwd.length > 32
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 登入('" + userId + "', '" + userPwd + "');";
 	pub.getQueryJSON(res, mandate, false, optObj, setUserInfo);

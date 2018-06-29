@@ -8,25 +8,50 @@ var orderId, customerName, customerPhone, customerAddress, contactPerson, contac
 
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	orderId = reqObj.OrderId;
-	customerName = reqObj.CustomerName;
-	customerPhone = reqObj.CustomerPhone;	
-	customerAddress = reqObj.CustomerAddress;
-	contactPerson = reqObj.ContactPerson;	
-	contactPhone = reqObj.ContactPhone;
-	deliverFee = reqObj.DeliverFee;	
-	productTotal = reqObj.ProductTotal;
-	preDeliverDate = reqObj.PredictDeliverDate;
-	actDeliverDate = reqObj.ActualDeliverDate;
-	deliverPlace = reqObj.DeliverPlace;
-	condition = reqObj.Condition;
-	sales = reqObj.Sales;
-	ps = reqObj.Ps;
+	var orderId = reqObj.OrderId;
+	var customerName = reqObj.CustomerName;
+	var customerPhone = reqObj.CustomerPhone;	
+	var customerAddress = reqObj.CustomerAddress;
+	var contactPerson = reqObj.ContactPerson;	
+	var contactPhone = reqObj.ContactPhone;
+	var deliverFee = reqObj.DeliverFee;	
+	var productTotal = reqObj.ProductTotal;
+	var preDeliverDate = reqObj.PredictDeliverDate;
+	var actDeliverDate = reqObj.ActualDeliverDate;
+	var deliverPlace = reqObj.DeliverPlace;
+	var condition = reqObj.Condition;
+	var sales = reqObj.Sales;
+	var ps = reqObj.Ps;
 	
 	var optObj = {
 		Status: false,
 		Success: false
 	};
+	
+	try {
+		if (
+			orderId > 16777215 ||
+			customerName.length > 50 ||
+			customerPhone.length > 15 ||
+			customerAddress.length > 100 ||
+			contactPerson.length > 20 ||
+			contactPhone.length > 15 ||
+			deliverFee > 16777215 ||
+			productTotal > 4294967295 ||
+			preDeliverDate.length > 20 ||
+			actDeliverDate.length > 20 ||
+			deliverPlace.length > 100 ||
+			condition > 255 ||
+			sales.length > 15 ||
+			ps.length > 100
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	if (actDeliverDate == undefined)
 		actDeliverDate = "NULL";

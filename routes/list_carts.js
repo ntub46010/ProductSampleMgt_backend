@@ -3,11 +3,9 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var salesId;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	salesId = reqObj.SalesId;
+	var salesId = reqObj.SalesId;
 	
 	var optObj = {
 		Status: false,
@@ -15,7 +13,20 @@ router.post('/', function(req, res, next) {
 		Carts: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示購物車('" + salesId + "');", true, optObj, setCarts);
+	try {
+		if (
+			salesId.length > 15
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
+	var mandate = "CALL 列示購物車('" + salesId + "');";
+	pub.getQueryJSON(res, mandate, true, optObj, setCarts);
 });
 
 function setCarts(res, result, optObj) {

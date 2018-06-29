@@ -3,19 +3,31 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var orderId, productId, amount;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	orderId = reqObj.OrderId;
-	productId = reqObj.ProductId;
-	amount = reqObj.Amount;
+	var orderId = reqObj.OrderId;
+	var productId = reqObj.ProductId;
+	var amount = reqObj.Amount;
 	
 	var optObj = {
 		Status: false,
 		Success: false,
 		IsLower: false
 	};
+	
+	try {
+		if (
+			orderId > 16777215 ||
+			productId > 65535 ||
+			amount > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 異動訂單項目('" + orderId + "', '" + productId + "', '" + amount + "');";
 	pub.getQueryJSON(res, mandate, false, optObj, setIsLower);

@@ -3,17 +3,28 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var customerId;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	customerId = reqObj.Id;
+	var customerId = reqObj.Id;
 	
 	var optObj = {
 		Status: false,
 		Success: false,
 		Contacts: []
 	};
+	
+	try {
+		if (
+			customerId > 65535
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
 	var mandate = "CALL 顯示客戶聯絡人(" + customerId + ");";
 	pub.getQueryJSON(res, mandate, true, optObj, setContacts);
 });

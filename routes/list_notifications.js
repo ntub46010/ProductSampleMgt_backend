@@ -13,7 +13,20 @@ router.post('/', function(req, res, next) {
 		Notifications: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示通知('" + userId + "');", true, optObj, setNotifications);
+	try {
+		if (
+			userId.length > 15
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
+	var mandate = "CALL 列示通知('" + userId + "');";
+	pub.getQueryJSON(res, mandate, true, optObj, setNotifications);
 });
 
 function setNotifications(res, result, optObj) {

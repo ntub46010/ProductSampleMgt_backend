@@ -66,6 +66,10 @@ exports.sendJSONResponse = function (res, optObj) {
 	res.status(200).json(optObj);
 }
 
+exports.sendBadResponse = function (res, optObj) {
+	sendFailResponse (res, optObj);
+}
+
 function sendFailResponse (res, optObj) {
 	optObj = {
 		Status: false

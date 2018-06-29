@@ -4,8 +4,6 @@ var multer = require('multer');
 var pub = require('./lib/public.js');
 var moment = require('./lib/moment-with-locales.js');
 
-//var userId = "";
-
 var storage = multer.diskStorage(
 		{				
 			destination: function (req, file, cb) {
@@ -27,8 +25,6 @@ var uploader = multer(
 );
 
 router.get('/', function(req, res){
-	//userId = req.param("userid"); //網頁瀏覽
-	//console.log("get userid = " + req.query.userid);
     res.send(
         '<form action="/upload_avatar" method="post" enctype="multipart/form-data">'+
         '<input type="file" name="file">'+

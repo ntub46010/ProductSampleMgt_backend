@@ -7,9 +7,9 @@ var keyword ,onSale, searchMode;
 
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	keyword = reqObj.Keyword;
-	onSale = reqObj.OnSale;
-	searchMode = reqObj.SearchMode;
+	var keyword = reqObj.Keyword;
+	var onSale = reqObj.OnSale;
+	var searchMode = reqObj.SearchMode;
 	
 	var optObj = {
 		Status: false,
@@ -36,6 +36,18 @@ router.post('/', function(req, res, next) {
 			break;
 	}
 	
+	try {
+		if (
+			onSale != 0 &&
+			onSale != 1
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 	
 	pub.getQueryJSON(res, mandate, true, optObj, setProducts);
 });

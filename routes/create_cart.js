@@ -22,6 +22,23 @@ router.post('/', function(req, res, next) {
 			Name: ""
 		}
 	};
+	
+	try {
+		if (
+			cartName.length > 30 ||
+			customerName.length > 50 ||
+			customerPhone.length > 15 ||
+			contactPerson.length > 30 ||
+			contactPhone.length > 15 ||
+			sales.length > 15
+		   )  {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 新增購物車('" + cartName + "', '" + customerName + "', '" + customerPhone + "', '" 
 			+ contactPerson + "', '" + contactPhone + "', '" + sales + "');";

@@ -3,11 +3,9 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var onSale;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	onSale = reqObj.OnSale;
+	var onSale = reqObj.OnSale;
 	
 	var optObj = {
 		Status: false,
@@ -15,7 +13,21 @@ router.post('/', function(req, res, next) {
 		Products: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示產品(" + onSale + ");", true, optObj, setProducts);
+	try {
+		if (
+			onSale != 0 &&
+			onSale != 1
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
+	var mandate = "CALL 列示產品(" + onSale + ");";
+	pub.getQueryJSON(res, mandate, true, optObj, setProducts);
 });
 
 function setProducts(res, result, optObj) {

@@ -15,6 +15,18 @@ router.post('/', function(req, res, next) {
 		CartInfo: {},
 		Products: []
 	};
+	
+	try {
+		if (
+			cartId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 顯示購物車摘要(" + cartId + ");"
 	pub.getQueryJSON(res, mandate, false, optObj, setCartInfo);

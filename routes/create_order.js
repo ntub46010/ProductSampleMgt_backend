@@ -3,25 +3,22 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var customerName, customerPhone, customerAddress, contactPerson, contactPhone, deliverFee, productTotal, 
-	deliverDate, deliverPlace, sales, ps, cartId;
 var products;
 
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	customerName = reqObj.CustomerName;
-	customerPhone = reqObj.CustomerPhone;	
-	customerAddress = reqObj.CustomerAddress;
-	contactPerson = reqObj.ContactPerson;	
-	contactPhone = reqObj.ContactPhone;
-	deliverFee = reqObj.DeliverFee;	
-	productTotal = reqObj.ProductTotal;
-	deliverDate = reqObj.PredictDeliverDate;
-	deliverPlace = reqObj.DeliverPlace;
-	sales = reqObj.Sales;
-	ps = reqObj.Ps;
-	cartId = reqObj.CartId;
-	
+	var customerName = reqObj.CustomerName;
+	var customerPhone = reqObj.CustomerPhone;	
+	var customerAddress = reqObj.CustomerAddress;
+	var contactPerson = reqObj.ContactPerson;	
+	var contactPhone = reqObj.ContactPhone;
+	var deliverFee = reqObj.DeliverFee;	
+	var productTotal = reqObj.ProductTotal;
+	var deliverDate = reqObj.PredictDeliverDate;
+	var deliverPlace = reqObj.DeliverPlace;
+	var sales = reqObj.Sales;
+	var ps = reqObj.Ps;
+	var cartId = reqObj.CartId;	
 	products = reqObj.Products
 	
 	var optObj = {
@@ -30,6 +27,40 @@ router.post('/', function(req, res, next) {
 		OrderId: 0,
 		IsLower: false
 	};
+	
+	try {
+		if (
+			customerName.length > 50 ||
+			customerPhone.length > 15 ||
+			customerAddress.length > 100 ||
+			contactPerson.length > 20 ||
+			contactPhone.length > 15 ||
+			deliverFee > 16777215 ||
+			productTotal > 4294967295 ||
+			deliverDate.length > 20 ||
+			deliverPlace.length > 100 ||
+			sales.length > 15 ||
+			ps.length > 100 ||
+			cartId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+		   
+		   for (var i = 0; i < products.length; i++) {
+			   if (
+				products[i].Id > 65535 ||
+				products[i].Amount > 4294967295
+			   ) {
+				pub.sendBadResponse(res, optObj);
+				return;
+			   }
+		   }
+		   
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 新增訂單('" + customerName + "', '" + customerPhone + "', '" + customerAddress + "', '" + 
 				contactPerson + "', '" + contactPhone + "', " + deliverFee + ", " + productTotal + ", '" + 

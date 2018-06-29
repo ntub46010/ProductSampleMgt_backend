@@ -3,11 +3,9 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var cartId;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	cartId = reqObj.CartId;
+	var cartId = reqObj.CartId;
 	
 	var optObj = {
 		Status: false,
@@ -15,7 +13,20 @@ router.post('/', function(req, res, next) {
 		Products: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示購物車內庫存不足產品(" + cartId + ");", true, optObj, setProducts);
+	try {
+		if (
+			cartId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
+	var mandate = "CALL 列示購物車內庫存不足產品(" + cartId + ");";
+	pub.getQueryJSON(res, mandate, true, optObj, setProducts);
 });
 
 function setProducts(res, result, optObj) {

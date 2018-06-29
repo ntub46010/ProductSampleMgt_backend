@@ -16,6 +16,18 @@ router.post('/', function(req, res, next) {
 		Products: []
 	};
 	
+	try {
+		if (
+			orderId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
 	var mandate = "CALL 顯示訂單摘要 (" + orderId + ");";
 	pub.getQueryJSON(res, mandate, false, optObj, setOrderInfo);
 });

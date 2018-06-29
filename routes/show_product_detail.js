@@ -32,6 +32,20 @@ router.post('/', function(req, res, next) {
 		OrderAmount: 0,
 		ProductAdmin: []
 	};
+	
+	try {
+		if (
+			productId > 65535 ||
+			cartId > 16777215 ||
+			orderId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
 	var mandate = "CALL 顯示商品詳情('" + productId + "')";
 	pub.getQueryJSON(res, mandate, false, optObj, setProductInfo);

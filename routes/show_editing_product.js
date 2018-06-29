@@ -30,19 +30,22 @@ router.post('/', function(req, res, next) {
 		},
 		ProductAdmin: []
 	};
+	
+	try {
+		if (
+			productId > 65535
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 
-	pub.getQueryJSON(res, "CALL 顯示材質();", true, optObj, setMaterial);
+	pub.getQueryJSON(res, "CALL 顯示商品詳情('" + productId + "');", false, optObj, setProductInfo);
 });
 
-function setMaterial(res, result, optObj) {
-	optObj.Materials = result;
-	pub.getQueryJSON(res, "CALL 顯示顏色();", true, optObj, setColor);
-}
-
-function setColor(res, result, optObj) {
-	optObj.Colors = result;
-	pub.getQueryJSON(res, "CALL 顯示商品詳情('" + productId + "');", false, optObj, setProductInfo);
-}
 
 function setProductInfo(res, result, optObj) {
 	if (!pub.isJSONEmpty(result)) {
@@ -53,8 +56,19 @@ function setProductInfo(res, result, optObj) {
 		delete optObj.ProductInfo;
 	}
 	
+	pub.getQueryJSON(res, "CALL 顯示材質();", true, optObj, setMaterial);
+}
+
+function setMaterial(res, result, optObj) {
+	optObj.Materials = result;
+	pub.getQueryJSON(res, "CALL 顯示顏色();", true, optObj, setColor);
+}
+
+function setColor(res, result, optObj) {
+	optObj.Colors = result;	
 	pub.getQueryJSON(res, "CALL 列示產品管理員();", true, optObj, setProductAdmin);
 }
+
 
 function setProductAdmin(res, result, optObj) {
 	if (result.length > 0) {

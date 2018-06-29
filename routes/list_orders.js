@@ -5,7 +5,7 @@ var pub = require('./lib/public.js');
 
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	condition = reqObj.Condition;
+	var condition = reqObj.Condition;
 	
 	var optObj = {
 		Status: false,
@@ -13,7 +13,20 @@ router.post('/', function(req, res, next) {
 		Orders: []
 	};
 	
-	pub.getQueryJSON(res, "CALL 列示訂單(" + condition + ");", true, optObj, setOrders);
+	try {
+		if (
+			condition > 255
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
+	
+	var mandate = "CALL 列示訂單(" + condition + ");";
+	pub.getQueryJSON(res, mandate, true, optObj, setOrders);
 });
 
 function setOrders(res, result, optObj) {

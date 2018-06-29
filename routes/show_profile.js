@@ -3,17 +3,27 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var userId;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	userId = reqObj.UserId;
+	var userId = reqObj.UserId;
 	
 	var optObj = {
 		Status: false,
 		Success: false,
 		Profile: {}
 	};
+	
+	try {
+		if (
+			userId.length > 15
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 	
 	var mandate = "CALL 顯示使用者資料 ('" + userId + "');";
 	pub.getQueryJSON(res, mandate, false, optObj, setProfile);

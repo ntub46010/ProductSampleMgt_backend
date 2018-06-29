@@ -3,11 +3,9 @@ var router = express.Router();
 var pool = require('./lib/db.js');
 var pub = require('./lib/public.js');
 
-var orderId;
-
 router.post('/', function(req, res, next) {
 	var reqObj = JSON.parse(JSON.stringify(req.body));
-	orderId = reqObj.OrderId;
+	var orderId = reqObj.OrderId;
 	
 	var optObj = {
 		Status: false,
@@ -16,6 +14,18 @@ router.post('/', function(req, res, next) {
 		Customers: [],
 		Conditions: []
 	};
+	
+	try {
+		if (
+			orderId > 16777215
+		   ) {
+			pub.sendBadResponse(res, optObj);
+			return;
+		   }
+	}catch (e) {
+		pub.sendBadResponse(res, optObj);
+		return;
+	}
 	
 	var mandate = "CALL 顯示訂單摘要 (" + orderId + ");";
 	pub.getQueryJSON(res, mandate, false, optObj, setOrderInfo);
